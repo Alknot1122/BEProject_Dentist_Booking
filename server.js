@@ -3,7 +3,14 @@ const dotenv = require('dotenv');
 const dentists = require('./routes/dentists');
 const auth = require('./routes/auth');
 const cookieParser = require('cookie-parser');
-dotenv.config({path:'./config/config.env'});
+dotenv.config({ path: './config/config.env' });
+//TODO
+//mongoSanitize
+//helmet
+//xss
+//rateLimit
+//hpp
+//Swagger
 
 const connectDB = require('./config/db');
 connectDB();
