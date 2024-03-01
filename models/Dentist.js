@@ -8,21 +8,23 @@ const DentistSchema = new mongoose.Schema({
         trim: true,
         maxlength: [50, 'Name can not be more than 50 characters']
     },
-    specialty: {
-        type: String,
-        required: [true, 'Please add specialty']
+    yearsOfExperience: {
+        type: Number,
+        required: [true, 'Please add years of experience']
     },
-    available_days: {
-        type: String,
-        required: [true, 'Please add available days'],
-    },
-    start_time: {
-        type: String,
-        required: [true, 'Please add start time'],
-    },
-    end_time: {
-        type: String,
-        required: [true, 'Please add end time'],
+    areaofExpertise: {
+        type: [String],
+        required: true,
+        enum: [
+            'Orthodontics',
+            'Endodontics',
+            'Prosthodontics',
+            'Periodontics',
+            'Pediatric Dentistry',
+            'Oral Surgery',
+            'Oral Pathology',
+            'Oral Radiology'
+        ]
     },
 }, {
     toJSON: {virtuals: true},
