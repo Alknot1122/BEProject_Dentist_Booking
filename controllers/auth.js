@@ -1,13 +1,12 @@
 const User = require('../models/Users');
+const Blacklist = require('../models/BlackList')
 
 const sendTokenResponse = (user, statusCode, res) => {
     const token = user.getSignedJwtToken();
-
     const option = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
         httpOnly: true
     };
-
     if(process.env.NODE_ENV === 'production') {
         options.secure = true;
     }
@@ -68,6 +67,33 @@ exports.login = async (req, res, next) => {
     // res.status(200).json({success: true, token});
     sendTokenResponse(user, 200, res);
 }
+
+exports.logout = async (req, res, next) => {
+    try {
+      const authHeader = req.headers['cookie']; // get the session cookie from request header
+      if (!authHeader) return res.sendStatus(204); // No content
+      const cookie = authHeader.split('=')[1]; // If there is, split the cookie string to get the actual jwt token
+      const accessToken = cookie.split(';')[0];
+      const checkIfBlacklisted = await Blacklist.findOne({ token: accessToken }); // Check if that token is blacklisted
+      // if true, send a no content response.
+      if (checkIfBlacklisted) return res.sendStatus(204);
+      // otherwise blacklist token
+      const newBlacklist = new Blacklist({
+        token: accessToken,
+      });
+      await newBlacklist.save();
+      // Also clear request cookie on client
+      res.setHeader('Clear-Site-Data', '"cookies"');
+      res.status(200).json({ message: 'You are logged out!' });
+    } catch (err) {
+        console.log(err)
+      res.status(500).json({
+        status: 'error',
+        message: 'Internal Server Error',
+      });
+    }
+    res.end();
+  }
 
 exports.getMe = async (req, res, next) => {
     const user = await User.findById(req.user.id);
