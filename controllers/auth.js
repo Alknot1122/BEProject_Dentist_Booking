@@ -18,7 +18,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 
 exports.register = async (req, res, next) => {
     try {
-        const {name, email, password, role} = req.body;
+        const {name, email, password, tel, role} = req.body;
 
         const user = await User.create({
             name,
@@ -27,8 +27,8 @@ exports.register = async (req, res, next) => {
             tel,
             role
         });
-        // const token = user.getSignedJwtToken();
-        // res.status(200).json({success: true, token});
+        const token = user.getSignedJwtToken();
+        res.status(200).json({success: true, token});
         sendTokenResponse(user, 200, res);
     } catch(err) {
         res.status(400).json({success: false});
