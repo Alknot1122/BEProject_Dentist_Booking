@@ -1,26 +1,47 @@
-const sql = require('../config/dentistDB')
+const mongoose = require('mongoose');
+
+const DentistSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Please add a name'],
+        unique: true,
+        trim: true,
+        maxlength: [50, 'Name can not be more than 50 characters']
+    },
+    specialty: {
+        type: String,
+        required: [true, 'Please add an address']
+    },
+    available_days: {
+        type: String,
+        required: [true, 'Please add a district']
+    },
+    start_time: {
+        type: String,
+        required: [true, 'Please add a province']
+    },
+    end_time: {
+        type: String,
+        required: [true, 'Please add a postalcode'],
+    },
+}, {
+    toJSON: {virtuals: true},
+    toObject: {virtuals: true}
+});
+
+DentistSchema.pre('deleteOne', {document: true, query: false}, async function (next) {
+    console.log(`Appointments being removed from hospital ${this._id}`);
+    await this.model(`Appointment`).deleteMany({hospital: this._id});
+    next();
+});
+
+DentistSchema.virtual(`appointments`, {
+    ref: `Appointment`,
+    localField: '_id',
+    foreignField: `hospital`,
+    justOne: false
+});
 
 
-const Dentist = function(dentist){
-    this.id = dentist.dentist_id;
-    this.name = dentist.name;
-    this.specialty = dentist.specialty;
-    this.avariable_days = dentist.avariable_days;
-    this.start_time = dentist.start_time;
-    this.end_time = dentist.end_tiem;
-};
 
-Dentist.getAll = result =>{
-    sql.query("SELECT * FROM dentist;",(err,res) =>{
-        if(err){
-            console.log(err);
-            result(err,null);
-            return;
-        }
-        console.log("Success",res);
-        result(null,res);
-    });
-};
-
-
-module.exports = Dentist;
+module.exports = mongoose.model('Hospital', DentistSchema);

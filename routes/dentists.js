@@ -1,16 +1,12 @@
 const express = require('express');
+const {getDentists, getDentist, createDentist, updateDentist, deleteDentist} = require('../controllers/dentists');
 
-const {getDentists} = require('../controllers/dentists')
 
+const router = express.Router();
 
-const routes = express.Router();
+const {protect, authorize} = require('../middleware/auth');
 
-routes.route('/dentists').get(getDentists);
+router.route('/').get(getDentists).post(protect, authorize('admin'), createDentist);
+router.route('/:id').get(getDentist).put(protect, authorize('admin'), updateDentist).delete(protect, authorize('admin'), deleteDentist);
 
-// Add routes
-// routes.get('/', SessionController.store);
-// routes.post('/', SessionController.store);
-// routes.put('/', SessionController.store);
-// routes.delete('/', SessionController.store);
-
-module.exports = routes;
+module.exports = router;
