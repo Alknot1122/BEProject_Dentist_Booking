@@ -58,14 +58,15 @@ exports.getDentists = async (req, res, next) => {
   
 exports.getDentist = async (req, res, next) => {
   try {
-    const Dentist = await Dentist.findById(req.params.id);
-
-    if(!Dentist) {
+    console.log(req.params.id);
+    const dentist = await Dentist.findById(req.params.id);
+    if(!dentist) {
       return res.status(400).json({success: false});
     }
 
-    res.status(200).json({success: true, data: Dentist});
+    res.status(200).json({success: true, data: dentist});
   } catch(err) {
+    console.log(err)
     res.status(400).json({success: false});
   }
 };
