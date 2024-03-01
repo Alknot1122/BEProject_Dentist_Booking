@@ -10,19 +10,19 @@ const DentistSchema = new mongoose.Schema({
     },
     specialty: {
         type: String,
-        required: [true, 'Please add an address']
+        required: [true, 'Please add specialty']
     },
     available_days: {
         type: String,
-        required: [true, 'Please add a district']
+        required: [true, 'Please add available days'],
     },
     start_time: {
         type: String,
-        required: [true, 'Please add a province']
+        required: [true, 'Please add start time'],
     },
     end_time: {
         type: String,
-        required: [true, 'Please add a postalcode'],
+        required: [true, 'Please add end time'],
     },
 }, {
     toJSON: {virtuals: true},
