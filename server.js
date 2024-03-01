@@ -6,7 +6,7 @@ dotenv.config({ path: './config/config.env' });
 //Route files
 const dentists = require('./routes/dentists');
 const auth = require('./routes/auth');
-const appointments = require('./routes/appointment');
+const appointment = require('./routes/appointment')
 
 //TODO
 //mongoSanitize
@@ -71,7 +71,7 @@ app.use(cookieParser());
 
 app.use('/api/v1/dentists',dentists);
 app.use('/api/v1/auth',auth);
-app.use('/api/v1/appointments', appointments);
+app.use('/api/v1/appointment',appointment)
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT,console.log("connecting"));
