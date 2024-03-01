@@ -1,9 +1,6 @@
 // Import required modules
 const express = require('express');
 const dotenv = require('dotenv');
-const dentists = require('./routes/dentists');
-const auth = require('./routes/auth');
-const appointment = require('./routes/appointment')
 const cookieParser = require('cookie-parser');
 dotenv.config({ path: './config/config.env' });
 
