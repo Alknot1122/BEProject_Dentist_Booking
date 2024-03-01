@@ -1,13 +1,25 @@
 const mongoose = require('mongoose');
 
 const appointmentSchema = new mongoose.Schema({
-    // TO DO : Add more fields
-    
-    // Example
-    // appointment_date : 2021-03-01
-    // user : 65e1a04b5e1f0b4a98e2f752
-    // dentist : 65e1a04b5e1f0b4a98e2f752
-    // hospital : 65e1a04b5e1f0b4a98e2f752
-});
+    bookingDate: {
+      type: Date,
+      required: [true, 'Please provide a booking date'],
+    },
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      required: [true, 'Please provide a user'],
+    },
+    dentist: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Dentist",
+      required: [true, 'Please provide a dentist'],
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+);
 
 module.exports = mongoose.model('Appointment', appointmentSchema);
