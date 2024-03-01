@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/Users');
+const User = require('../models/User');
 const BlackList = require('../models/BlackList');
 
 //Protext routes
@@ -19,11 +19,11 @@ exports.protect = async (req, res, next) => {
         if (checkIfBlacklisted)
         return res
             .status(401)
-            .json({ message: "This session has expired. Please login" });
+            .json({ message: "This User has already logouted. Please login" });
         req.user = await User.findById(decoded.id);
         next();
     } catch(err) {
-        console.log(err.stack);
+        //console.log(err.stack);
         return res.status(401).json({success: false, message: 'Not authorize to access this route'});
     }
 }

@@ -1,4 +1,4 @@
-const User = require('../models/Users');
+const User = require('../models/User');
 const Blacklist = require('../models/BlackList')
 
 const sendTokenResponse = (user, statusCode, res) => {

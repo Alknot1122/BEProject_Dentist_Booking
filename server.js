@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const dentists = require('./routes/dentists');
 const auth = require('./routes/auth');
+const appointment = require('./routes/appointment')
 const cookieParser = require('cookie-parser');
 dotenv.config({ path: './config/config.env' });
 //TODO
@@ -61,6 +62,7 @@ app.use(cookieParser());
 
 app.use('/api/v1/dentist',dentists);
 app.use('/api/v1/auth',auth);
+app.use('/api/v1/appointment',appointment)
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT,console.log("connecting"));
