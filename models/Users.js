@@ -16,6 +16,11 @@ const UserSchema = new mongoose.Schema({
             'Please add a valid email'
         ]
     },
+    tel:{
+        type:String,
+        requried:[true,"Please add an telephone contact"],
+        minlength:10
+    },
     role: {
         type: String,
         enum: ['user', 'admin'],
