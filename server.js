@@ -1,9 +1,13 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const dentists = require('./routes/dentists');
-const auth = require('./routes/auth');
 const cookieParser = require('cookie-parser');
 dotenv.config({ path: './config/config.env' });
+
+//Route files
+const dentists = require('./routes/dentists');
+const auth = require('./routes/auth');
+const appointments = require('./routes/appointment');
+
 //TODO
 //mongoSanitize
 const mongoSanitize = require('express-mongo-sanitize');
@@ -25,7 +29,6 @@ const connectDB = require('./config/db');
 connectDB();
 
 const app = express();
-app.use(express.json());
 
 const swaggerOptions = {
     swaggerDefinition : {
@@ -34,12 +37,19 @@ const swaggerOptions = {
             title : 'Library API',
             version : '1.0.0',
             description : 'Dentist_Appointment API'
-        }
+        },
+        servers:[
+            {
+                url: 'http://localhost:5000/api/v1'
+            }
+        ],
     },
     apis : ['./route/*.js'],
 }
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUI.serve,  swaggerUI.setup(swaggerDocs))  
+app.use('/api-docs', swaggerUI.serve,  swaggerUI.setup(swaggerDocs));
+
+app.use(express.json());
 //sanitize
 app.use(mongoSanitize());
 //helmet
@@ -59,8 +69,9 @@ app.use(cors());
 
 app.use(cookieParser());
 
-app.use('/api/v1/dentist',dentists);
+app.use('/api/v1/dentists',dentists);
 app.use('/api/v1/auth',auth);
+app.use('/api/v1/appointments', appointments);
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT,console.log("connecting"));
