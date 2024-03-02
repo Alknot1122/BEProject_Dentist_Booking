@@ -12,18 +12,17 @@ const DentistSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Please add years of experience']
     },
-    areaofExpertise: {
+    areaOfExpertise: {
         type: [String],
         required: true,
         enum: [
-            'Orthodontics',
-            'Endodontics',
-            'Prosthodontics',
-            'Periodontics',
-            'Pediatric Dentistry',
-            'Oral Surgery',
-            'Oral Pathology',
-            'Oral Radiology'
+            'จัดฟัน',
+            'รักษารากฟัน',
+            'ทำฟันปลอม',
+            'รักษาโรคเหงือก',
+            'ทำฟันเด็ก',
+            'ศัลยกรรมช่องปาก',
+            'ทันตรังสีวิทยา'
         ]
     },
 }, {
