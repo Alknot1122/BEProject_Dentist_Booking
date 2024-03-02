@@ -158,7 +158,7 @@ exports.deleteAppointment = async (req, res, next) => {
                 message: `User ${req.user.id} is not authorized to delete this`,
             });
         }
-        await appointment.remove();
+        await appointment.deleteOne();
         res.status(200).json({ success: true, data: {} });
     } catch (error) {
         console.log(error);

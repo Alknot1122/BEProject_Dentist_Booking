@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const appointmentSchema = new mongoose.Schema({
-    bookingDate: {
+    appointmentDate: {
       type: Date,
-      required: [true, 'Please provide a booking date'],
+      required: [true, 'Please provide a appointment date'],
     },
     user: {
       type: mongoose.Schema.ObjectId,
