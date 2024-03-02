@@ -66,7 +66,7 @@ app.use(hpp());
 app.use(cors());
 
 // Routes
-app.use('/api/v1/dentist', dentists);
+app.use('/api/v1/dentists', dentists);
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/appointment', appointment);
 

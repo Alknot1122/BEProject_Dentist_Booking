@@ -83,32 +83,34 @@ exports.createDentist = async (req, res, next) => {
   
 exports.updateDentist = async (req, res, next) => {
   try {
-    const Dentist = await Dentist.findByIdAndUpdate(req.params.id, req.body, {
+    const dentist = await Dentist.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true
     });
 
-    if(!Dentist) {
+    if(!dentist) {
       return res.status(400).json({success: false});
     }
 
-    res.status(200).json({success: true, data: Dentist});
+    res.status(200).json({success: true, data: dentist});
   } catch(err) {
+    console.log(err);
     res.status(400).json({success: false});
   }
 };
   
 exports.deleteDentist = async (req, res, next) => {
   try {
-    const Dentist = await Dentist.findById(req.params.id);
+    const dentist = await Dentist.findById(req.params.id);
 
-    if(!Dentist) {
-      return res.status(400).json({success: false});
+    if(!dentist) {
+      return res.status(400).json({success: false, message : "The dentist not found"});
     }
 
-    await Dentist.deleteOne();
+    await dentist.deleteOne();
     res.status(200).json({success: true, data: {}});
   } catch(err) {
-    res.status(400).json({success: false});
+      console.log(err.stack);
+      res.status(400).json({success: false});
   }
 };

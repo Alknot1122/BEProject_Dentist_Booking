@@ -20,25 +20,18 @@ const appointmentRouter = require('./appointment');
 *               name:
 *                   type: string
 *                   description: Dentist name
-*               specialty:
-*                   type: string
-*                   description: specialty of the dentist
-*               available_days:
-*                   type: string
-*                   description: Working Day of the dentist
-*               start_time:
-*                   type: string
-*                   description: Start working time
-*               end_time:
-*                   type: string
-*                   description: Finish working time
+*               yearsOfExperience:
+*                   type : number
+*                   description : Duration measuring expertise in a specific field
+*               areaOfExpertise:
+*                   type: array
+*                   items:
+*                       type: string
+*                       description: specialty of the dentist
 *           example:
-*               id:             609bda561452242d88d36e37
-*               name:           Dr. Smith
-*               specialty:      Orthodontist
-*               available_days: Monday,Wednesday,Friday
-*               start_time:     09:00:00
-*               end_time:       17:00:00
+*               name:               หมอกล้า
+*               yearsOfExperience:  69
+*               areaOfExpertise:    [ทันตรังสีวิทยา]
 */
 
 /**
