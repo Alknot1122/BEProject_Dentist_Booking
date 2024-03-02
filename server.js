@@ -32,7 +32,7 @@ const app = express();
 
 const swaggerOptions = {
     swaggerDefinition : {
-        openai : '3.0.0',
+        openapi : '3.0.0',
         info : {
             title : 'Library API',
             version : '1.0.0',
@@ -44,10 +44,11 @@ const swaggerOptions = {
             }
         ],
     },
-    apis : ['./route/*.js'],
-}
+    apis : ['./routes/*.js'],
+};
+
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUI.serve,  swaggerUI.setup(swaggerDocs));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 app.use(express.json());
 //sanitize

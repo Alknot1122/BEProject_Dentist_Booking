@@ -15,7 +15,6 @@ const {getDentists, getDentist, createDentist, updateDentist, deleteDentist} = r
 *                   type: string
 *                   format: uuid
 *                   description: The auto-generated id of the dentist
-*                   example: d290f1ee-6c54-4b01-90e6-d701748f0851
 *               name:
 *                   type: string
 *                   description: Dentist name
