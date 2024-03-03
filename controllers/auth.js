@@ -1,5 +1,11 @@
 const User = require('../models/User');
-const Blacklist = require('../models/BlackList')
+const Blacklist = require('../models/BlackList');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const mongoose = require('mongoose');
+const { GridFSBucket } = require('mongodb');
+
+const url = mongoose.createConnection(process.env.MONGO_DB_URL, { useNewUrlParser: true });
+
 
 const sendTokenResponse = (user, statusCode, res) => {
     const token = user.getSignedJwtToken();
@@ -32,6 +38,41 @@ exports.register = async (req, res, next) => {
         res.status(400).json({success: false});
         console.log(err.stack);
     }
+}
+
+exports.updateProfile = async (req, res,next) => {
+    const file = req.file
+    const user = await User.findByIdAndUpdate(req.user.id,{image:file.filename});
+    res.status(201).json({success:"true",file:file,user:user})
+  }
+
+exports.getProfile = async(req,res,next) =>{
+    try {
+        const imageBucket = new GridFSBucket(url, {
+            bucketName: "photos",
+        })
+        const user = await User.findById(req.user.id);
+        let downloadStream = imageBucket.openDownloadStreamByName(
+            user.image
+        )
+        downloadStream.on("data", function (data) {
+            return res.status(200).write(data)
+        })
+      
+        downloadStream.on("error", function (data) {
+            return res.status(404).send({ error: "Image not found" })
+        })
+      
+        downloadStream.on("end", () => {
+            return res.end()
+        })
+      } catch (error) {
+        console.log(error)
+        res.status(500).send({
+          message: "Error Something went wrong",
+          error,
+        })
+      }
 }
 
 exports.login = async (req, res, next) => {
