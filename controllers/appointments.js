@@ -10,14 +10,37 @@ exports.getAppointments = async (req, res, next) => {
         if (req.user.role === "admin") {
             query = Appointment.find();
         } else {
-            query = Appointment.find({ user: req.user.id });
+            query = Appointment.find({ user: req.user.id});
         }
-        
         const Appointments = await query.populate({
             path: "dentist",
             select: "name areaOfExpertise",
         });
-        
+        res.status(200).json({
+            success: true,
+            count: Appointments.length,
+            data: Appointments,
+        });
+    } catch (error) {
+        console.log(error);
+        return res
+            .status(500)
+            .json({ success: false, message: "Cannot find Appointments" });
+    }
+};
+
+exports.getLatestAppointments = async (req, res, next) => {
+    try {
+        let query;
+        if (req.user.role === "admin") {
+            query = Appointment.find({finish:false});
+        } else {
+            query = Appointment.find({ user: req.user.id,finish:false});
+        }
+        const Appointments = await query.populate({
+            path: "dentist",
+            select: "name areaOfExpertise",
+        });
         res.status(200).json({
             success: true,
             count: Appointments.length,
@@ -58,7 +81,6 @@ exports.getAppointment = async (req, res, next) => {
   }
 };
 
-
 // @desc Add appointment
 // @route POST /api/v1/Dentist/:dentistID/appointments
 // @access Private
@@ -75,7 +97,7 @@ exports.addAppointment = async (req, res, next) => {
         }
         req.body.user = req.user.id;
 
-        const existedAppointments = await Appointment.find({ user: req.user.id });
+        const existedAppointments = await Appointment.find({ user: req.user.id,finish:false });
 
         if (existedAppointments.length >= 1 && req.user.role !== "admin") {
             return res.status(400).json({
@@ -84,7 +106,7 @@ exports.addAppointment = async (req, res, next) => {
             });
         }
 
-        const existedAppointmentDate = await Appointment.find({ appointmentDate: req.body.appointmentDate, dentist: req.params.dentistId });
+        const existedAppointmentDate = await Appointment.find({ appointmentDate: req.body.appointmentDate, dentist: req.params.dentistId ,finish:false});
 
         if (existedAppointmentDate.length >= 1 && req.user.role !== "admin") {
             return res.status(400).json({
@@ -100,6 +122,22 @@ exports.addAppointment = async (req, res, next) => {
     }
 };
 
+exports.updateFinish = async  (req,res,next) => {
+    try {
+      // Find appointments where date/time is less than or equal to current date/time
+      const appointmentsToUpdate = await Appointment.find({ appointmentDate: { $lte: new Date() }, finish: false });
+  
+      // Update each appointment
+      await Promise.all(appointmentsToUpdate.map(async appointment => {
+        appointment.finish = true;
+        await appointment.save();
+      }));
+  
+      res.status(202).json({success:true,msg:"Appointments updated successfully."});
+    } catch (error) {
+      res.status(400).json({success:false,msg:"Error"});
+    }
+  }
 
 // @desc Update appointment
 // @route PUT /api/v1/appointments/:id

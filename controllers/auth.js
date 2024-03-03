@@ -1,9 +1,8 @@
 const User = require('../models/User');
 const Blacklist = require('../models/BlackList');
-const { GridFsStorage } = require('multer-gridfs-storage');
 const mongoose = require('mongoose');
 const { GridFSBucket } = require('mongodb');
-
+const bcrypt = require('bcrypt');
 const url = mongoose.createConnection(process.env.MONGO_DB_URL, { useNewUrlParser: true });
 
 
@@ -39,6 +38,44 @@ exports.register = async (req, res, next) => {
         console.log(err.stack);
     }
 }
+
+
+exports.updatePassWord = async (req, res) => {
+    const userId = req.user.id; // Assuming req.user.id contains the ID of the logged-in user
+    const { newPassword } = req.body;
+  
+    // Validate request body
+    if (!newPassword) {
+      return res.status(400).json({ error: "New password are required." });
+    }
+  
+    // Find user by ID
+    User.findById(userId)
+      .then(user => {
+        if (!user) {
+          return res.status(404).json({ error: "User not found." });
+        }
+  
+        // Check if the current password matches
+  
+        // Update the password
+        user.password = newPassword;
+  
+        // Save the updated user
+        user.save()
+          .then(() => {
+            res.status(200).json({ message: "Password updated successfully." });
+          })
+          .catch(error => {
+            console.error("Error saving user:", error);
+            res.status(500).json({ error: "Internal server error." });
+          });
+      })
+      .catch(error => {
+        console.error("Error finding user:", error);
+        res.status(500).json({ error: "Internal server error." });
+      });
+  };
 
 exports.updateProfile = async (req, res,next) => {
     const file = req.file

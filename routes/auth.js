@@ -1,5 +1,5 @@
 const express = require('express');
-const {register, login, getMe,logout, updateProfile,getProfile} = require('../controllers/auth');
+const {register, login, getMe,logout, updateProfile,getProfile,updatePassWord} = require('../controllers/auth');
 const multer = require("multer")
 const { GridFsStorage } = require("multer-gridfs-storage")
 
@@ -75,4 +75,5 @@ router.get('/me', protect, getMe);
 router.post('/logout', protect,logout);
 router.post('/profile',protect,upload.single('image'), updateProfile);
 router.get('/profile',protect,getProfile);
+router.put('/password',protect,updatePassWord);
 module.exports = router;
