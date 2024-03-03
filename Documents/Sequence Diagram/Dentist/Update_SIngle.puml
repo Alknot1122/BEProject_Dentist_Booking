@@ -1,0 +1,33 @@
+@startuml Update Dentist
+
+header Sample VacQ Sequence Diagram
+footer Page %page% of %lastpage%
+title "Update Dentist"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:/api/v1/dentists/:id" as routerDentistsId
+participant "<<controllers>>\n:updateDentist" as controllersUpdateDentist
+participant "<<model>>\n:Dentist" as modelDentist
+database "<<MongoDB>>\n:dentists" as DentistsDatabase
+
+client->server ++:req.put('/api/v1/dentists/:id')
+server->routerDentistsId ++:app.put('/api/v1/dentists/:id', updateDentist)
+routerDentistsId -> controllersUpdateDentist ++:updateDentist(req, res, next)
+activate controllersUpdateDentist
+
+controllersUpdateDentist->modelDentist ++:Dentist.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+activate modelDentist
+modelDentist --> DentistsDatabase:findByIdAndUpdate()
+DentistsDatabase --> modelDentist:dentist
+modelDentist --> controllersUpdateDentist --:dentist
+
+alt "Dentist found"
+    controllersUpdateDentist->client --:res.status(200).json({success: true, data: dentist})
+else "Dentist not found"
+    controllersUpdateDentist->client --:res.status(400).json({success: false})
+end
+
+deactivate modelDentist
+deactivate controllersUpdateDentist
+@enduml

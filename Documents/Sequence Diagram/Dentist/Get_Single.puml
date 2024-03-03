@@ -1,0 +1,33 @@
+@startuml Get Dentist
+
+header Sample VacQ Sequence Diagram
+footer Page %page% of %lastpage%
+title "Get Dentist"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:/api/v1/dentists/:id" as routerDentistsId
+participant "<<controllers>>\n:getDentist" as controllersGetDentist
+participant "<<model>>\n:Dentist" as modelDentist
+database "<<MongoDB>>\n:dentists" as DentistsDatabase
+
+client->server ++:req.get('/api/v1/dentists/:id')
+server->routerDentistsId ++:app.get('/api/v1/dentists/:id', getDentist)
+routerDentistsId -> controllersGetDentist ++:getDentist(req, res, next)
+activate controllersGetDentist
+
+controllersGetDentist->modelDentist ++:Dentist.findById(req.params.id)
+activate modelDentist
+modelDentist --> DentistsDatabase:dentistSchema
+DentistsDatabase --> modelDentist:dentist
+modelDentist --> controllersGetDentist --:dentist
+
+alt "Dentist found"
+    controllersGetDentist->client --:res.status(200).json({success: true, data: dentist})
+else "Dentist not found"
+    controllersGetDentist->client --:res.status(400).json({success: false})
+end
+
+deactivate modelDentist
+deactivate controllersGetDentist
+@enduml

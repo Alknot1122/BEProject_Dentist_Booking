@@ -1,0 +1,37 @@
+@startuml Delete Dentist
+
+header Sample VacQ Sequence Diagram
+footer Page %page% of %lastpage%
+title "Delete Dentist"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:/api/v1/dentists/:id" as routerDentistsId
+participant "<<controllers>>\n:deleteDentist" as controllersDeleteDentist
+participant "<<model>>\n:Dentist" as modelDentist
+database "<<MongoDB>>\n:dentists" as DentistsDatabase
+
+client->server ++:req.delete('/api/v1/dentists/:id')
+server->routerDentistsId ++:app.delete('/api/v1/dentists/:id', deleteDentist)
+routerDentistsId -> controllersDeleteDentist ++:deleteDentist(req, res, next)
+activate controllersDeleteDentist
+
+controllersDeleteDentist->modelDentist ++:Dentist.findById(req.params.id)
+activate modelDentist
+modelDentist --> DentistsDatabase:DentistSchema
+DentistsDatabase --> modelDentist:dentist
+modelDentist --> controllersDeleteDentist:dentist
+
+
+alt "Dentist found"
+    controllersDeleteDentist->modelDentist ++:dentist.deleteOne()
+    modelDentist --> DentistsDatabase:dentist.deleteOne()
+    DentistsDatabase --> modelDentist:dentist
+    controllersDeleteDentist->client --:res.status(200).json({success: true, data: {}})
+else "Dentist not found"
+    controllersDeleteDentist->client --:res.status(400).json({success: false, message: "The dentist not found"})
+end
+
+deactivate modelDentist
+deactivate controllersDeleteDentist
+@enduml
