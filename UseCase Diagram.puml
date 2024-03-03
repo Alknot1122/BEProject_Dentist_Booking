@@ -1,0 +1,58 @@
+@startuml
+
+top to bottom direction
+
+skinparam actorStyle awesome
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+}
+
+actor User
+rectangle "Dentist_Booking System" {
+    rectangle "Dentist" {
+        usecase "View Dentist(s)" as VD
+        usecase "Manage All Dentists" as MAD
+    }
+    rectangle "Middleware" {
+        usecase "Protect" as Protect
+        usecase "Authorize" as Authorize
+    }
+    rectangle "Appointment" {
+        usecase "View Appointment(s)" as VA
+        usecase "Manage Appointment" as MA
+    }
+    rectangle "Auth" {
+        usecase "Register" as Register
+        usecase "Me" as Me
+        usecase "Login" as Login
+        usecase "Logout" as Logout
+    }
+    rectangle "BlackList" {
+        usecase "Update Status" as UpdateStatus
+    }
+}
+
+User -- VD
+User -- Protect
+User -- Register
+User -- Login
+
+Protect --> Authorize
+Protect -- VA
+Protect -- Logout
+Protect -- Me
+
+Authorize -- MAD
+Authorize -- MA 
+
+Login -- UpdateStatus
+Logout -- UpdateStatus
+
+actor Admin
+VD -- Admin
+Protect -- Admin
+Register -- Admin
+Login -- Admin
+
+@enduml
