@@ -4,6 +4,11 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 /**
 * @swagger
 * components:
+*   securitySchemes:
+*       jwtAuth:
+*           type: http
+*           scheme: bearer
+*           bearerFormat: JWT
 *   schemas: 
 *       Appointment:
 *           type: object
@@ -52,6 +57,8 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 *   get:
 *       summary: Returns the list of all the appointments by dentist Id
 *       tags: [Appointments]
+*       security:
+*           - jwtAuth: []
 *       parameters:
 *           - in: path
 *             name: dentistId
@@ -76,6 +83,8 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 *   get:
 *       summary: Get the appointment by id
 *       tags: [Appointments]
+*       security:
+*           - jwtAuth: []
 *       parameters:
 *           - in: path
 *             name: dentistId
@@ -107,6 +116,8 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 *   post:
 *       summary: Create a new appointment
 *       tags: [Appointments]
+*       security:
+*           - jwtAuth: []
 *       parameters:
 *           - in: path
 *             name: dentistId
@@ -137,6 +148,8 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 *  put:
 *       summary: Update the appointment by the id
 *       tags: [Appointments]
+*       security:
+*           - jwtAuth: []
 *       parameters:
 *           - in: path
 *             name: dentistId
@@ -176,6 +189,8 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 *   delete:
 *       summary: Remove the appointment by id
 *       tags: [Appointments]
+*       security:
+*           - jwtAuth: []
 *       parameters:
 *           - in: path
 *             name: dentistId

@@ -88,6 +88,8 @@ const appointmentRouter = require('./appointment');
 *   post:
 *       summary: Create a new dentist
 *       tags: [Dentists]
+*       security:
+*           - jwtAuth: []
 *       requestBody:
 *           required: true
 *           content:
@@ -111,6 +113,8 @@ const appointmentRouter = require('./appointment');
 *  put:
 *       summary: Update the dentist by the id
 *       tags: [Dentists]
+*       security:
+*           - jwtAuth: []
 *       parameters:
 *           - in: path
 *             name: id
@@ -143,6 +147,8 @@ const appointmentRouter = require('./appointment');
 *   delete:
 *       summary: Remove the dentist by id
 *       tags: [Dentists]
+*       security:
+*           - jwtAuth: []
 *       parameters:
 *        - in: path
 *          name: id
