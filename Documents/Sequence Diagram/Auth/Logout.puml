@@ -1,0 +1,37 @@
+@startuml Logout
+
+header Sample VacQ Sequence Diagram
+footer Page %page% of %lastpage%
+title "Logout"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:/api/v1/logout" as routerLogout
+participant "<<controllers>>\n:logout" as controllersLogout
+participant "<<model>>\n:Blacklist" as modelBlacklist
+database "<<MongoDB>>\n:blacklists" as BlacklistsDatabase
+
+client->server ++:req.post('/api/v1/logout')
+server->routerLogout ++:app.post('/api/v1/logout', logout)
+routerLogout -> controllersLogout ++:logout(req, res, next)
+activate controllersLogout
+
+controllersLogout->controllersLogout ++:checkIfBlacklisted
+controllersLogout->modelBlacklist ++:Blacklist.findOne({ token: accessToken })
+activate modelBlacklist
+modelBlacklist->BlacklistsDatabase ++:db.blacklists.find({ token: accessToken })
+BlacklistsDatabase-->modelBlacklist --:blacklist
+modelBlacklist --> controllersLogout --:checkIfBlacklisted
+
+alt "Token blacklisted"
+    controllersLogout->client --:res.sendStatus(204)
+else "Token not blacklisted"
+    controllersLogout->modelBlacklist ++:newBlacklist.save()
+    modelBlacklist->BlacklistsDatabase ++:db.blacklists.insertOne({ token: accessToken })
+    BlacklistsDatabase-->modelBlacklist --:blacklist
+    controllersLogout->client --:res.status(200).json({ message: 'You are logged out!' })
+end
+
+deactivate modelBlacklist
+deactivate controllersLogout
+@enduml

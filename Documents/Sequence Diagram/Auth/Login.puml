@@ -1,0 +1,32 @@
+@startuml Login
+
+header Sample VacQ Sequence Diagram
+footer Page %page% of %lastpage%
+title "Login"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:/api/v1/login" as routerLogin
+participant "<<controllers>>\n:login" as controllersLogin
+participant "<<model>>\n:User" as modelUser
+database "<<MongoDB>>\n:users" as UsersDatabase
+
+client->server ++:req.post('/api/v1/login')
+server->routerLogin ++:app.post('/api/v1/login', login)
+routerLogin -> controllersLogin ++:login(req, res, next)
+activate controllersLogin
+
+controllersLogin->modelUser ++:User.findOne({email}).select('+password')
+modelUser->UsersDatabase ++:db.users.find({email})
+UsersDatabase-->modelUser --:user
+modelUser --> controllersLogin --:user
+
+alt "User not found or invalid credentials"
+    controllersLogin->client --:res.status(400).json({ success: false, msg: 'Invalid credentials' })
+else "User found"
+    controllersLogin->controllersLogin ++:sendTokenResponse(user, 200, res)
+end
+
+deactivate modelUser
+deactivate controllersLogin
+@enduml
