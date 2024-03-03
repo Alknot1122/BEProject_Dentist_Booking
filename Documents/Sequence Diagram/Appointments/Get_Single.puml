@@ -1,0 +1,38 @@
+@startuml Get Single Appointment
+
+header Sample VacQ Sequence Diagram
+footer Page %page% of %lastpage%
+title "Get Single Appointment"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:appointments/:id" as routerAppointmentsId
+participant "<<controllers>>\n:getAppointment" as controllersGetAppointment
+participant "<<model>>\n:Appointment" as modelAppointment
+database "<<MongoDB>>\n:appointments" as AppointmentsDatabase
+
+client->server ++:req.get('/api/v1/appointments/:id')
+server->routerAppointmentsId ++:app.get('/api/v1/appointments/:id', getAppointment)
+routerAppointmentsId -> controllersGetAppointment ++:getAppointment(req, res, next)
+activate controllersGetAppointment
+
+controllersGetAppointment->modelAppointment ++:findById(req.params.id)
+modelAppointment -> AppointmentsDatabase: find({_id: req.params.id})
+AppointmentsDatabase --> modelAppointment: Appointment
+modelAppointment --> controllersGetAppointment --:appointment
+
+
+
+alt "Appointment not found"
+    controllersGetAppointment->client --:res.status(404).json({ success: false, message: "No appointment with the id" })
+else "Appointment found"
+    controllersGetAppointment->client --:res.status(200).json({ success: true, data: appointment })
+end
+
+deactivate modelAppointment
+
+
+
+
+deactivate controllersGetAppointment
+@enduml

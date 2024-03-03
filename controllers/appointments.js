@@ -7,9 +7,7 @@ const Dentist = require('../models/Dentist');
 exports.getAppointments = async (req, res, next) => {
     try {
         let query;
-        if (req.user.role === "admin" && req.params.dentistId) {
-            query = Appointment.find({ dentist: req.params.dentistId });
-        } else if (req.user.role === "admin") {
+        if (req.user.role === "admin") {
             query = Appointment.find();
         } else {
             query = Appointment.find({ user: req.user.id });
@@ -17,7 +15,7 @@ exports.getAppointments = async (req, res, next) => {
         
         const Appointments = await query.populate({
             path: "dentist",
-            select: "name specialty",
+            select: "name areaOfExpertise",
         });
         
         res.status(200).json({

@@ -1,0 +1,50 @@
+@startuml Add Appointment
+
+header Sample VacQ Sequence Diagram
+footer Page %page% of %lastpage%
+title "Add Appointment"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:Dentist/:dentistID/appointments" as routerAppointments
+participant "<<controllers>>\n:addAppointment" as controllersAddAppointment
+participant "<<model>>\n:Dentist" as modelDentist
+participant "<<model>>\n:Appointment" as modelAppointment
+database "<<MongoDB>>\n:appointments" as AppointmentsDatabase
+
+client->server ++:req.post('/api/v1/Dentist/:dentistID/appointments')
+server->routerAppointments ++:app.post('/api/v1/Dentist/:dentistID/appointments', addAppointment)
+routerAppointments -> controllersAddAppointment ++:addAppointment(req, res, next)
+activate controllersAddAppointment
+
+controllersAddAppointment->modelDentist ++:Dentist.findById(req.params.dentistId)
+activate modelDentist
+modelDentist --> controllersAddAppointment --:dentist
+
+alt "Dentist not found"
+    controllersAddAppointment->client --:res.status(404).json({ success: false, message: "No dentist with the id" })
+else "Dentist found"
+
+    alt "User has existing appointments"
+        controllersAddAppointment->client --:res.status(400).json({ success: false, message: "The user is allowed to book only ONE appointment" })
+    else "User has no existing appointments"
+        
+        
+        alt "Appointment date already booked"
+            controllersAddAppointment->client --:res.status(400).json({ success: false, message: "The appointment Date is already booked by someone else" })
+        else "Appointment date available"
+            controllersAddAppointment->modelAppointment ++:Appointment.create(req.body)
+            activate modelAppointment
+            modelAppointment -> AppointmentsDatabase: AppointmentSchema
+            AppointmentsDatabase --> modelAppointment: appointment
+            modelAppointment --> controllersAddAppointment --:appointment
+
+            controllersAddAppointment->client --:res.status(201).json({ success: true, data: appointment })
+            deactivate modelAppointment
+        end
+    end
+end
+
+deactivate modelDentist
+deactivate controllersAddAppointment
+@enduml

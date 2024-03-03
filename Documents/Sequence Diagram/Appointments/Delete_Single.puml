@@ -1,0 +1,40 @@
+@startuml Delete Appointment
+
+header Sample VacQ Sequence Diagram
+footer Page %page% of %lastpage%
+title "Delete Appointment"
+
+participant "Client" as client
+participant "<<javaScript>>\n:server" as server
+participant "<<router>>\n:appointments/:id" as routerAppointments
+participant "<<controllers>>\n:deleteAppointment" as controllersDeleteAppointment
+participant "<<model>>\n:Appointment" as modelAppointment
+database "<<MongoDB>>\n:appointments" as AppointmentsDatabase
+
+client->server ++:req.delete('/api/v1/appointments/:id')
+server->routerAppointments ++:app.delete('/api/v1/appointments/:id', deleteAppointment)
+routerAppointments -> controllersDeleteAppointment ++:deleteAppointment(req, res, next)
+activate controllersDeleteAppointment
+
+controllersDeleteAppointment->modelAppointment ++:Appointment.findById(req.params.id)
+activate modelAppointment
+modelAppointment --> controllersDeleteAppointment --:appointment
+
+alt "Appointment not found"
+    controllersDeleteAppointment->client --:res.status(404).json({ success: false, message: "No appointment with the id" })
+
+else "Appointment found"
+    alt "User unauthorized to delete"
+        controllersDeleteAppointment->client --:res.status(401).json({ success: false, message: "User is not authorized to delete this" })
+    else "User authorized to delete"
+        controllersDeleteAppointment->modelAppointment ++:appointment.deleteOne()
+        modelAppointment -> AppointmentsDatabase: deleteOne()
+        AppointmentsDatabase --> modelAppointment --:appointment
+        modelAppointment --> controllersDeleteAppointment --:appointment
+        controllersDeleteAppointment->client --:res.status(200).json({ success: true, data: {} })
+    end
+end
+
+deactivate modelAppointment
+deactivate controllersDeleteAppointment
+@enduml
