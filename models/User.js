@@ -3,6 +3,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
+    image:{
+        type :String,
+        default:"1709486617827_icon.png"
+    },
     name: {
         type: String,
         required: [true, 'Please add a name']
@@ -54,5 +58,6 @@ UserSchema.methods.getSignedJwtToken = function() {
 UserSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 }
+
 
 module.exports = mongoose.model('User', UserSchema);
