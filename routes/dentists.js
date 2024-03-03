@@ -1,5 +1,6 @@
 const express = require('express');
 const {getDentists, getDentist, createDentist, updateDentist, deleteDentist} = require('../controllers/dentists');
+const appointmentRouter = require('./appointment');
 
 /**
 * @swagger
@@ -15,28 +16,22 @@ const {getDentists, getDentist, createDentist, updateDentist, deleteDentist} = r
 *                   type: string
 *                   format: uuid
 *                   description: The auto-generated id of the dentist
+*                   example: d290f1ee-6c54-4b01-90e6-d701748f0851
 *               name:
 *                   type: string
 *                   description: Dentist name
-*               specialty:
-*                   type: string
-*                   description: specialty of the dentist
-*               available_days:
-*                   type: string
-*                   description: Working Day of the dentist
-*               start_time:
-*                   type: string
-*                   description: Start working time
-*               end_time:
-*                   type: string
-*                   description: Finish working time
+*               yearsOfExperience:
+*                   type : number
+*                   description : Duration measuring expertise in a specific field
+*               areaOfExpertise:
+*                   type: array
+*                   items:
+*                       type: string
+*                       description: specialty of the dentist
 *           example:
-*               id:             609bda561452242d88d36e37
-*               name:           Dr. Smith
-*               specialty:      Orthodontist
-*               available_days: Monday,Wednesday,Friday
-*               start_time:     09:00:00
-*               end_time:       17:00:00
+*               name:               หมอกล้า
+*               yearsOfExperience:  69
+*               areaOfExpertise:    [ทันตรังสีวิทยา]
 */
 
 /**
@@ -166,7 +161,9 @@ const {getDentists, getDentist, createDentist, updateDentist, deleteDentist} = r
 const router = express.Router();
 
 const {protect, authorize} = require('../middleware/auth');
-+
+
+router.use('/:dentistId/appointment/', appointmentRouter);
+
 router.route('/').get(getDentists).post(protect, authorize('admin'), createDentist);
 router.route('/:id').get(getDentist).put(protect, authorize('admin'), updateDentist).delete(protect, authorize('admin'), deleteDentist);
 

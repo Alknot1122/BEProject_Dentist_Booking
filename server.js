@@ -1,3 +1,4 @@
+// Import required modules
 const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
@@ -5,6 +6,7 @@ dotenv.config({ path: './config/config.env' });
 
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+//xss
 const {xss} = require('express-xss-sanitizer');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
@@ -28,6 +30,7 @@ connectDB();
 // Create Express app
 const app = express();
 
+// Swagger configuration
 const swaggerOptions = {
     swaggerDefinition : {
         openapi : '3.0.0',
@@ -43,10 +46,9 @@ const swaggerOptions = {
         ],
     },
     apis : ['./routes/*.js'],
-};
-
+}
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+app.use('/api-docs', swaggerUI.serve,  swaggerUI.setup(swaggerDocs));
 
 app.use(express.json());
 
@@ -58,24 +60,25 @@ app.use(mongoSanitize());
 app.use(helmet());
 app.use(xss());
 const limiter = rateLimit({
-    windowsMs : 10*60*1000, //10 mins
+    windowsMs : 10 * 60 * 1000, //10 mins
     max  : 100
 })
 app.use(limiter);
 app.use(hpp());
 app.use(cors());
 
+app.use(cookieParser());
+
 // Routes
 app.use('/api/v1/dentists',dentists);
 app.use('/api/v1/auth',auth);
-app.use('/api/v1/appointments', appointments);
+app.use('/api/v1/appointments', appointment);
 
-// Start the server
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT,console.log("connecting"));
+const server = app.listen(PORT, console.log("Server started"));
 
 // Error handling
-process.on('unhandledRejection',(err,promise) =>{
+process.on('unhandledRejection',(err, promise) =>{
     console.log(`Error: ${err.message}`);
-    server.close(() => process.exit(1))
+    server.close(() => process.exit(1));
 });

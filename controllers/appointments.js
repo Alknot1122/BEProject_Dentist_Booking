@@ -8,11 +8,11 @@ exports.getAppointments = async (req, res, next) => {
     try {
         let query;
         if (req.user.role === "admin" && req.params.dentistId) {
-            query = Booking.find({ dentist: req.params.dentistId });
+            query = Appointment.find({ dentist: req.params.dentistId });
         } else if (req.user.role === "admin") {
-            query = Booking.find();
+            query = Appointment.find();
         } else {
-            query = Booking.find({ user: req.user.id });
+            query = Appointment.find({ user: req.user.id });
         }
         
         const Appointments = await query.populate({
@@ -41,7 +41,7 @@ exports.getAppointment = async (req, res, next) => {
   try {
     const appointment = await Appointment.findById(req.params.id).populate({
       path: "dentist",
-      select: "name specialty",
+      select: "name areaOfExpertise",
     });
     if (!appointment) {
       return res
@@ -62,12 +62,13 @@ exports.getAppointment = async (req, res, next) => {
 
 
 // @desc Add appointment
-// @route POST /api/v1/hospitals/:hospitalId/appointments
+// @route POST /api/v1/Dentist/:dentistID/appointments
 // @access Private
 exports.addAppointment = async (req, res, next) => {
     try {
         req.body.dentist = req.params.dentistId;
         const dentist = await Dentist.findById(req.params.dentistId);
+        //console.log(req.params.dentistId)
         if (!dentist) {
             return res.status(404).json({
                 success: false,
@@ -157,7 +158,7 @@ exports.deleteAppointment = async (req, res, next) => {
                 message: `User ${req.user.id} is not authorized to delete this`,
             });
         }
-        await appointment.remove();
+        await appointment.deleteOne();
         res.status(200).json({ success: true, data: {} });
     } catch (error) {
         console.log(error);

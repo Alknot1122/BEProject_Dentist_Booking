@@ -8,15 +8,16 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 *       Appointment:
 *           type: object
 *           required:
-*               - bookingDate
+*               - appointmentDate
 *               - user
 *               - dentist
+*               - createdAt
 *           properties:
 *               id:
 *                   type: string
 *                   format: uuid
 *                   description: The auto-generated id of the appointment
-*               bookingDate:
+*               appointmentDate:
 *                   type: Date
 *                   description: The day the user made an appointment to meet with the dentist
 *               user:
@@ -31,11 +32,11 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 *                   type: Date
 *                   description: The date that this appointment created
 *           example:
-*               id:             609bda561452242d88d36e37
-*               bookingDate:    2024-02-23
-*               user:           654esy688154648y57s64y54
-*               dentist:        656ers348964589r48a15h78
-*               createdAt:      2024-02-19
+*               id:                 609bda561452242d88d36e37
+*               appointmentDate:    2024-02-23T12:00:00.000Z
+*               user:               654esy688154648y57s64y54
+*               dentist:            656ers348964589r48a15h78
+*               createdAt:          2024-02-19T12:00:00.000Z
 */
 
 /**
@@ -47,10 +48,17 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 
 /**
 * @swagger
-* /appointments:
+* /dentists/{dentistId}/appointment/:
 *   get:
-*       summary: Returns the list of all the appointments
+*       summary: Returns the list of all the appointments by dentist Id
 *       tags: [Appointments]
+*       parameters:
+*           - in: path
+*             name: dentistId
+*             schema:
+*                 type: string
+*             required: true
+*             description: The dentist id
 *       responses:
 *           200:
 *               description: The list of the appointments
@@ -64,11 +72,18 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 
 /**
 * @swagger
-* /appointments/{id}:
+* /dentists/{dentistId}/appointment/{id}:
 *   get:
 *       summary: Get the appointment by id
 *       tags: [Appointments]
 *       parameters:
+*           - in: path
+*             name: dentistId
+*             schema:
+*                 type: string
+*             required: true
+*             description: The dentist id
+*
 *           - in: path
 *             name: id
 *             schema:
@@ -88,10 +103,17 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 
 /**
 * @swagger
-* /appointments:
+* /dentists/{dentistId}/appointment/:
 *   post:
 *       summary: Create a new appointment
 *       tags: [Appointments]
+*       parameters:
+*           - in: path
+*             name: dentistId
+*             schema:
+*                 type: string
+*             required: true
+*             description: The dentist id
 *       requestBody:
 *           required: true
 *           content:
@@ -111,15 +133,22 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 
 /**
 * @swagger
-* /appointments/{id}:
+* /dentists/{dentistId}/appointment/{id}:
 *  put:
 *       summary: Update the appointment by the id
 *       tags: [Appointments]
 *       parameters:
 *           - in: path
+*             name: dentistId
+*             schema:
+*                 type: string
+*             required: true
+*             description: The dentist id
+*
+*           - in: path
 *             name: id
 *             schema:
-*               type: string
+*                 type: string
 *             required: true
 *             description: The appointment id
 *       requestBody:
@@ -143,17 +172,24 @@ const {getAppointments, getAppointment, addAppointment, updateAppointment, delet
 
 /**
 * @swagger
-* /appointments/{id}:
+* /dentists/{dentistId}/appointment/{id}:
 *   delete:
 *       summary: Remove the appointment by id
 *       tags: [Appointments]
 *       parameters:
-*        - in: path
-*          name: id
-*          schema:
-*               type: string
-*          required: true
-*          description: The appointment id
+*           - in: path
+*             name: dentistId
+*             schema:
+*                 type: string
+*             required: true
+*             description: The dentist id
+*
+*           - in: path
+*             name: id
+*             schema:
+*                 type: string
+*             required: true
+*             description: The appointment id
 * 
 *       responses:
 *           200:
