@@ -1,5 +1,5 @@
 const express = require('express');
-const {getAppointments,updateFinish, getAppointment, addAppointment, updateAppointment, deleteAppointment,getLatestAppointments} = require('../controllers/appointments');
+const {getAppointments, updateFinish, getAppointment, addAppointment, updateAppointment, deleteAppointment, getLatestAppointments} = require('../controllers/appointments');
 
 /**
 * @swagger

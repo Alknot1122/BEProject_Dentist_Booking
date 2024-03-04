@@ -1,0 +1,110 @@
+@startuml
+
+left to right direction
+class "<<Application>>\nDentist_Booking System" as DBS
+
+'Dentist
+class "<<Resource>>\nDentist" as DT {
+    <<GET>> +getAllDentists():Dentist
+    <<POST>> +createDentist():Dentist
+}
+
+class "<<Resource>>\nDentist" as DTid {
+    <<GET>> +getAllDentist():Dentist
+    <<PUT>> +updateDentist():Dentist
+    <<DELETE>> +deleteDentist():void
+}
+
+class "<<Representation>>\nDentist" as DTRep {
+    - name
+    - yearsOfExperience
+    - areaOfExpertise
+}
+
+'Appointment updateFinish, getAppointment, addAppointment, updateAppointment, deleteAppointment, getLatestAppointments
+class "<<Resource>>\Appointment" as AP {
+    <<GET>> +getAppointments():Appointment
+    <<POST>> +addAppointment():Appointment
+}
+
+class "<<Resource>>\nAppointment" as APid {
+    <<GET>> +getAppointment():Appointment
+    <<POST>> +createAppointment():Appointment
+    <<DELETE>> +deleteAppointment():void
+}
+
+class "<<Resource>>\nAppointment" as APL {
+    <<GET>> +getLatestAppointments():Appointment
+    <<PUT>> +updateFinish():Appointment
+}
+
+class "<<Representation>>\nAppointment" as APRep {
+    - appointmentDate:
+    - user
+    - dentist
+    - finish
+    - createdAt
+}
+
+'Auth register, login, getMe,logout, updateProfile,getProfile,updatePassWord
+class "<<Resource>>\Auth" as AU
+
+class "<<Resource>>\nAuth" as AURegister {
+    <<POST>> +register():User
+}
+
+class "<<Resource>>\nAuth" as AULogin {
+    <<POST>> +login():User
+}
+
+class "<<Resource>>\nAuth" as AUMe {
+    <<GET>> +getme():User
+}
+
+class "<<Resource>>\nAuth" as AULogout {
+    <<POST>> +logout():void
+}
+
+class "<<Resource>>\nAuth" as AUProfile{
+    <<GET>> +getProfile():User
+    <<POST>> +updateProfile():User
+}
+
+class "<<Resource>>\nAuth" as AUPassword {
+    <<PUT>> +updatePassword():User
+}
+
+class "<<Representation>>\nUser" as AURep {
+    - image
+    - name
+    - email
+    - tel
+    - role
+    - password
+    - createdAt
+}
+
+DBS ..> DT : "/dentists\n<<Path>>"
+DT ..> DTid : "/dentistId\n<<Path>>"
+DTid ..> DTRep : "<<use>>"
+
+DTid ..> AP : "/appointments\n<<Path>>"
+AP ..> APid : "/appointmentId\n<<Path>>"
+AP ..> APL : "/latest\n<<Path>>"
+APid ..> APRep : "<<use>>"
+APL ..> APRep : "<<use>>"
+
+DBS ..> AU : "/auth\n<<Path>>"
+AU ..> AURegister : "/register\n<<Path>>"
+AU ..> AULogin : "/login\n<<Path>>"
+AU ..> AUMe : "/me\n<<Path>>"
+AU ..> AULogout : "/logout\n<<Path>>"
+AU ..> AUProfile : "/profile\n<<Path>>"
+AU ..> AUPassword : "/password\n<<Path>>"
+
+AURegister ..> AURep : "<<use>>"
+AULogin ..> AURep : "<<use>>"
+AUMe ..> AURep : "<<use>>"
+AUProfile ..> AURep : "<<use>>"
+AUPassword ..> AURep : "<<use>>"
+@enduml

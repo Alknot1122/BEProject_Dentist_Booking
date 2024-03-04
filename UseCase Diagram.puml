@@ -14,45 +14,38 @@ rectangle "Dentist_Booking System" {
         usecase "View Dentist(s)" as VD
         usecase "Manage All Dentists" as MAD
     }
-    rectangle "Middleware" {
-        usecase "Protect" as Protect
-        usecase "Authorize" as Authorize
-    }
+    ' rectangle "Middleware" {
+    '     usecase "Protect" as Protect
+    '     usecase "Authorize" as Authorize
+    ' }
     rectangle "Appointment" {
         usecase "View Appointment(s)" as VA
         usecase "Manage Appointment" as MA
+        usecase "getLatestAppointments" as GLA
+        usecase "updateFinish" as UF
     }
-    rectangle "Auth" {
-        usecase "Register" as Register
-        usecase "Me" as Me
-        usecase "Login" as Login
-        usecase "Logout" as Logout
-    }
-    rectangle "BlackList" {
-        usecase "Update Status" as UpdateStatus
+    rectangle "Account" {
+        usecase "GetProfile" as GP
+        usecase "ManageProfile" as MP
     }
 }
 
 User -- VD
-User -- Protect
-User -- Register
-User -- Login
 
-Protect --> Authorize
-Protect -- VA
-Protect -- Logout
-Protect -- Me
-
-Authorize -- MAD
-Authorize -- MA 
-
-Login -- UpdateStatus
-Logout -- UpdateStatus
+User -- MA
+User -- VA
+User -- GLA
+User -- GP
+User -- MP
 
 actor Admin
 VD -- Admin
-Protect -- Admin
-Register -- Admin
-Login -- Admin
+MAD -- Admin
+VA -- Admin
+MA -- Admin
+GLA -- Admin
+UF -- Admin
+GP -- Admin
+MP -- Admin
 
 @enduml
