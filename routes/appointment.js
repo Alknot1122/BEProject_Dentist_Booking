@@ -221,7 +221,7 @@ const {protect, authorize} = require('../middleware/auth');
 router.route('/')
     .get(protect, getAppointments)
     .post(protect, authorize('admin', 'user'), addAppointment);
-router.route('/latest').get(protect,getLatestAppointments).put(protect,updateFinish)
+router.route('/latest').get(protect,getLatestAppointments).put(protect,authorize('admin'),updateFinish)
 router.route('/:id')
     .get(protect, getAppointment)
     .put(protect, authorize('admin', 'user'), updateAppointment)

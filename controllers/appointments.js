@@ -133,9 +133,9 @@ exports.updateFinish = async  (req,res,next) => {
         await appointment.save();
       }));
   
-      res.status(202).json({success:true,msg:"Appointments updated successfully."});
+      res.status(200).json({success:true,msg:"Appointments updated successfully."});
     } catch (error) {
-      res.status(400).json({success:false,msg:"Error"});
+      res.status(401).json({success:false,msg:"Error"});
     }
   }
 
