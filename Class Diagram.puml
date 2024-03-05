@@ -5,12 +5,12 @@ class "<<Application>>\nDentist_Booking System" as DBS
 
 'Dentist
 class "<<Resource>>\nDentist" as DT {
-    <<GET>> +getAllDentists():Dentist
+    <<GET>> +getDentists():Dentist
     <<POST>> +createDentist():Dentist
 }
 
 class "<<Resource>>\nDentist" as DTid {
-    <<GET>> +getAllDentist():Dentist
+    <<GET>> +getDentist():Dentist
     <<PUT>> +updateDentist():Dentist
     <<DELETE>> +deleteDentist():void
 }
